@@ -1,0 +1,20 @@
+﻿<MudItem xs="12" lg="12" md="12" sm="12">
+    @if(InnerGridComponent is not null)
+    {
+        <MudGridComponent Justify="InnerGridComponent.Justify" Spacing="InnerGridComponent.Spacing">
+            @ChildContent
+        </MudGridComponent>
+    }
+    else
+    {
+        @ChildContent
+    }
+</MudItem>
+
+    @code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public MudGridFormComponentInstance? InnerGridComponent { get; set; }
+}

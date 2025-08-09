@@ -1,0 +1,125 @@
+﻿@using global::MudBlazor
+
+<MudSelectExtended T="string"
+                   ItemCollection=@items
+                   SearchBox="@Searchable"
+                   SearchBoxClearable=true
+                   SearchFunc=SearchFunc
+                   Disabled="@Disabled"
+                   Label="@Label"
+                   ValueChanged="@OnValueChanged"
+                   ReadOnly="@ReadOnly"
+                   ErrorText="@ErrorHelperText"
+                   HelperText=@HelperText
+                   Error=@(!string.IsNullOrWhiteSpace(ErrorHelperText))
+                   Value="@Value"
+                   Clearable="@Clearable"
+                   ToStringFunc="GetText"
+                   MultiSelection="@false"
+                   Variant="@Variant" />
+
+
+@code {
+    ICollection<string> items = [];
+
+    protected override void OnInitialized()
+    {
+        items = Items?
+            .Select(x => x.Value)?
+            .ToList() ?? [];
+
+        if (Items?.All(x => string.IsNullOrWhiteSpace(x.Value) && string.IsNullOrWhiteSpace(x.Label)) == true)
+        {
+            HelperText = "There are no items to select for this dropdown";
+            Disabled = true;
+        }
+    }
+
+    string GetText(string value)
+    {
+        var item = Items.FirstOrDefault(x => x.Value == value);
+        return item.Label ?? item.Value;
+    }
+
+    bool SearchFunc(string value, string searchValue)
+    {
+        if (string.IsNullOrWhiteSpace(searchValue))
+        {
+            return true;
+        }
+
+        var item = Items.FirstOrDefault(x => x.Value == value);
+
+        var valueToSearchOn = !string.IsNullOrWhiteSpace(item.Label)
+               ? item.Label
+               : item.Value;
+
+        if (SearchOperator == DropdownSearchOperator.Contains)
+        {
+            if (SearchCaseSensitive)
+            {
+                return valueToSearchOn.Contains(searchValue);
+            }
+            return valueToSearchOn.Contains(searchValue, StringComparison.OrdinalIgnoreCase);
+        }
+
+        if (SearchOperator == DropdownSearchOperator.StartsWith)
+        {
+            if (SearchCaseSensitive)
+            {
+                return valueToSearchOn.StartsWith(searchValue);
+            }
+            return valueToSearchOn.StartsWith(searchValue, StringComparison.OrdinalIgnoreCase);
+        }
+
+        if (SearchOperator == DropdownSearchOperator.Equals)
+        {
+            if (SearchCaseSensitive)
+            {
+                return valueToSearchOn.Equals(searchValue);
+            }
+            return valueToSearchOn.Equals(searchValue, StringComparison.OrdinalIgnoreCase);
+        }
+
+        return false;
+    }
+
+    [Parameter]
+    public IEnumerable<TranslatedEnumItem> Items { get; set; } = Array.Empty<TranslatedEnumItem>();
+
+    [Parameter]
+    public bool Clearable { get; set; }
+
+    [Parameter]
+    public string? Label { get; set; }
+
+    [Parameter]
+    public bool Searchable { get; set; }
+
+    [Parameter]
+    public DropdownSearchOperator SearchOperator { get; set; }
+
+    [Parameter]
+    public bool SearchCaseSensitive { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnValueChanged { get; set; }
+
+    [Parameter]
+    public bool ReadOnly { get; set; }
+
+    [Parameter]
+    public string? ErrorHelperText { get; set; }
+
+    [Parameter]
+    public string? HelperText { get; set; }
+
+    [Parameter]
+    public string? Value { get; set; }
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    [Parameter]
+    public Variant Variant { get; set; } = Variant.Outlined;
+}

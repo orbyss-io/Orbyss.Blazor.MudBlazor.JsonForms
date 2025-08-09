@@ -1,0 +1,87 @@
+﻿@using Orbyss.Blazor.JsonForms.Constants
+@using global::MudBlazor;
+
+@typeparam TDate
+@inherits MudBlazorFormComponentBase
+
+<MudDatePicker Date="@value"
+               DateChanged="@OnChanged"
+               Error="@(!string.IsNullOrWhiteSpace(ErrorHelperText))"               
+               ErrorText="@ErrorHelperText"
+               Disabled="@Disabled"
+               ReadOnly="@ReadOnly"
+               Culture=@FormCulture.Instance
+               Color=@Color
+               Underline=@Underline
+               HelperText="@HelperText"
+               Label="@Label"
+               Variant="Variant"
+               Clearable=true
+               Editable=@AllowManualInput
+               MinDate="@MinimumDate"
+               MaxDate="@MaximumDate" />
+
+@code {
+
+    private DateTime? value;
+
+    protected override void OnParametersSet()
+    {
+        if (ConvertToDateTime is null)
+        {
+            value = null;
+        }
+        else
+        {
+            value = ConvertToDateTime(Value);
+        }
+
+        base.OnParametersSet();
+    }
+    
+    [Parameter]
+    public bool AllowManualInput { get; set; }
+
+    [Parameter]
+    public DateTime? MinimumDate { get; set; }
+
+    [Parameter]
+    public DateTime? MaximumDate { get; set; }
+
+    [Parameter]
+    public string? Format { get; set; }
+
+    [Parameter]
+    public Func<DateTime?, TDate>? ConvertFromDateTime { get; set; }
+
+    [Parameter]
+    public Func<TDate, DateTime?>? ConvertToDateTime { get; set; }
+
+    [Parameter]
+    public EventCallback<TDate> OnValueChanged { get; set; }
+
+    [Parameter]
+    public TDate Value { get; set; } = default!;
+
+    private Task OnChanged(DateTime? value)
+    {
+        if (this.value.HasValue)
+        {
+            this.value = value;
+        }
+
+        if (!value.HasValue || ConvertToDateTime is null)
+        {
+            return OnValueChanged.InvokeAsync(default);
+        }
+
+        if (ConvertFromDateTime is not null)
+        {
+            return OnValueChanged.InvokeAsync(
+                ConvertFromDateTime.Invoke(value)
+            );
+        }
+
+        return Task.CompletedTask;
+    }
+}

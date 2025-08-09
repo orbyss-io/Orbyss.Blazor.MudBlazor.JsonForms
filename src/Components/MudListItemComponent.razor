@@ -1,0 +1,36 @@
+﻿@using global::MudBlazor
+
+<MudGrid Style="margin-top: 20px" Justify="Justify.FlexStart">
+    <MudItem xs="12">
+        <MudPaper Class="pa-12 ma-2" Square="true">
+            <MudGrid Justify="Justify.FlexEnd">
+
+                <MudItem xs="@(ReadOnly ? 12 : 11)">
+                    @ChildContent
+                </MudItem>
+
+                @if (!ReadOnly)
+                {
+                    <MudItem xs="1">
+                        <MudIconButton OnClick="@OnRemoveClicked" Icon="@Icons.Material.Filled.DeleteForever"></MudIconButton>
+                    </MudItem>
+                }
+
+            </MudGrid>
+        </MudPaper>
+    </MudItem>        
+</MudGrid>
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public EventCallback OnRemoveClicked { get; set; }
+
+    [CascadingParameter]
+    public IJsonFormContext? FormContext { get; set; }
+
+    [Parameter]
+    public bool ReadOnly { get; set; }
+}

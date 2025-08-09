@@ -1,0 +1,108 @@
+﻿@using Orbyss.Blazor.JsonForms
+@using Orbyss.Blazor.JsonForms.ComponentInstances.Interfaces
+@using Orbyss.Blazor.JsonForms.Context.Models
+@using global::MudBlazor;
+
+@inherits FormComponentBase
+
+<MudStepperExtended @ref="@mudStepper"
+                    PreventStepChangeAsync="PreventStepChange"
+                    LocalizedStrings="@LocalizedStrings"
+                    Variant="@Variant"
+                    Color="@Color"
+                    HeaderTextView="HeaderTextView.All"
+                    HeaderBadgeView="HeaderBadgeView.GreyOutIncomplete"
+                    ContentStyle="min-height: 200px">
+
+    @if (FormContext.GetPages().Count() > 0 && gridInstance is not null)
+    {
+        foreach (var (index, page) in GetIndexedPages())
+        {
+            <MudStepExtended Icon="@(headerIcons[index])" StatusChanged="(status) => OnStatusChanged(index, status)" Number="index" id="@(page.Id)" Title="@(FormContext.GetLabel(page.Id))">
+                <ChildContent>
+                    <DynamicComponentWithChildContent Type="@(gridInstance.ComponentType)" Parameters="gridInstance.GetParameters()">
+                        @foreach (var context in page.ElementContexts)
+                        {
+                            <FormElementSelector Context="@context" />
+                        }
+                    </DynamicComponentWithChildContent>
+                </ChildContent>
+            </MudStepExtended>
+        }
+    }
+</MudStepperExtended>
+
+
+@code {
+    private MudStepperExtended mudStepper = default!;
+    private IFormComponentInstance gridInstance = default!;
+    string[] headerIcons = Array.Empty<string>();
+
+    [CascadingParameter]
+    public IFormComponentInstanceProvider FormComponentInstanceProvider { get; set; } = default!;
+
+    [Parameter]
+    public StepperLocalizedStrings? LocalizedStrings { get; set; }
+
+    [Parameter]
+    public Variant Variant { get; set; }
+
+    [Parameter]
+    public Color Color { get; set; }
+
+    [Parameter]
+    public EventCallback OnSubmitClicked { get; set; }
+
+    private IEnumerable<(int pageIndex, FormPageContext page)> GetIndexedPages() => FormContext.GetPages().Select((x, index) => (index, x));
+
+    protected override void OnInitialized()
+    {
+        if (LocalizedStrings is null)
+            LocalizedStrings = new();
+
+        SubscribeOnLanguageChanged(() => InvokeAsync(StateHasChanged));
+
+        headerIcons = FormContext
+            .GetPages()
+            .Select(x => Icons.Material.Filled.RadioButtonUnchecked)
+            .ToArray();
+
+        gridInstance = FormComponentInstanceProvider.GetGrid(FormContext, null);
+
+        base.OnInitialized();
+    }
+
+
+    private Task OnStatusChanged(int index, StepStatus stepStatus)
+    {
+        if (stepStatus == StepStatus.Completed && (index + 1) == FormContext.GetPages().Count())
+        {
+            if (stepStatus == StepStatus.Completed)
+            {
+                headerIcons[index] = Icons.Material.Filled.RadioButtonChecked;
+            }
+
+            return OnSubmitClicked.InvokeAsync();
+        }
+
+        if (stepStatus == StepStatus.Completed)
+        {
+            headerIcons[index] = Icons.Material.Filled.RadioButtonChecked;
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private Task<bool> PreventStepChange(StepChangeDirection direction, int nextPageIndex)
+    {
+        if (direction == StepChangeDirection.Forward)
+        {
+            var activeIndex = mudStepper.GetActiveIndex();
+            var page = FormContext.GetPage(activeIndex);
+            var result = !FormContext.Validate(page.Id);
+            return Task.FromResult(result);
+        }
+
+        return Task.FromResult(false);
+    }
+}
