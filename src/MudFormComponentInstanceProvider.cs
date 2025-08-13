@@ -8,6 +8,7 @@ using Orbyss.Blazor.JsonForms.Context.Models;
 using Orbyss.Blazor.JsonForms.Interpretation;
 using Orbyss.Blazor.MudBlazor.JsonForms.ComponentInstances;
 using Orbyss.Blazor.MudBlazor.JsonForms.Components;
+using ZXing.Common.ReedSolomon;
 
 namespace Orbyss.Blazor.MudBlazor.JsonForms
 {
@@ -163,7 +164,13 @@ namespace Orbyss.Blazor.MudBlazor.JsonForms
 
         public virtual ButtonFormComponentInstanceBase GetButton(FormButtonType type, IJsonFormContext? form = null)
         {
-            return GetButtonInternal(type, form);
+            var result = GetButtonInternal(type, form);
+            if (options?.ConfigureButton is not null)
+            {
+                return options.ConfigureButton(result, type, form);
+            }
+
+            return result;
         }
 
         private MudButtonFormComponentInstance GetButtonInternal(FormButtonType type, IJsonFormContext? form = null)
@@ -180,7 +187,11 @@ namespace Orbyss.Blazor.MudBlazor.JsonForms
 
         public virtual IFormComponentInstance GetGrid(IJsonFormContext? form = null, FormPageContext? page = null)
         {
-            var result = new MudGridFormComponentInstance();
+            var result = new MudGridFormComponentInstance
+            {
+                Class = "mb-4"
+            };
+
             if (options?.ConfigureGrid is not null)
             {
                 return options.ConfigureGrid(result, form, page);

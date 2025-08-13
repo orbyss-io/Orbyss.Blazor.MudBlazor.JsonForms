@@ -1,28 +1,20 @@
 ﻿using MudBlazor;
-using Orbyss.Blazor.JsonForms.ComponentInstances;
+using Orbyss.Blazor.MudBlazor.JsonForms.Components;
 
 namespace Orbyss.Blazor.MudBlazor.JsonForms.ComponentInstances
 {
-    public sealed class MudIntegerFormComponentInstance : InputFormComponentInstance<MudNumericField<int?>>
+    public sealed class MudIntegerFormComponentInstance : MudBlazorFormComponentInstanceBase<MudBlazorIntegerField>
     {
-        public MudIntegerFormComponentInstance() : base(t => (int?)t)
+        public MudIntegerFormComponentInstance() : base(token => (int?)token)
         {
         }
 
-        public Variant Variant { get; set; } = Variant.Outlined;
-
-        public string? PlaceHolder { get; set; }
+        public Typo Typo { get; set; } = Typo.inherit;
 
         protected override IDictionary<string, object?> GetFormInputParameters()
         {
-            var result = new Dictionary<string, object?>
-            {
-                [nameof(MudNumericField<int?>.Placeholder)] = PlaceHolder,
-                [nameof(MudNumericField<int?>.Variant)] = Variant,
-                [nameof(MudNumericField<int?>.ErrorText)] = ErrorHelperText,
-                [nameof(MudNumericField<int?>.HasErrors)] = !string.IsNullOrWhiteSpace(ErrorHelperText),
-                [nameof(MudNumericField<int?>.Error)] = !string.IsNullOrWhiteSpace(ErrorHelperText)
-            };
+            var result = base.GetFormInputParameters();
+            result.Add(nameof(MudBlazorIntegerField.Typo), Typo);
 
             return result;
         }

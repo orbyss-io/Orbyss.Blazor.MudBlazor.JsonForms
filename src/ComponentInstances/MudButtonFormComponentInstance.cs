@@ -14,15 +14,15 @@ namespace Orbyss.Blazor.MudBlazor.JsonForms.ComponentInstances
         {
         }
 
-        public Variant Variant { get; init; }
+        public Variant Variant { get; set; }
 
-        public Color Color { get; init; }
+        public Color Color { get; set; }
 
-        public string? StartIcon { get; init; }
+        public string? StartIcon { get; set; }
 
-        public string? EndIcon { get; init; }
+        public string? EndIcon { get; set; }
 
-        public Size Size { get; init; } = Size.Small;
+        public Size Size { get; set; } = Size.Medium;
 
         protected override IDictionary<string, object?> GetButtonParameters()
         {

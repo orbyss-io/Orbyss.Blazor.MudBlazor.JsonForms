@@ -2,37 +2,23 @@
 @using global::MudBlazor;
 
 @typeparam TDate
-@inherits MudBlazorFormComponentBase
+@inherits MudBlazorFormComponentBase<TDate>
 
-<MudStack Row=true Spacing="2">
-    <MudDatePicker Date="@value"
-                   DateChanged="@OnChanged"
-                   Error="@(!string.IsNullOrWhiteSpace(ErrorHelperText))"
-                   ErrorText="@ErrorHelperText"
-                   Disabled="@Disabled"
-                   ReadOnly="@ReadOnly"                   
-                   Culture=@FormCulture.Instance
-                   Color=@Color
-                   Underline=@Underline
-                   HelperText="@HelperText"
-                   Label="@Label"
-                   Variant="Variant"
-                   Clearable=true
-                   Editable=@AllowManualInput
-                   MinDate="@MinimumDate"
-                   MaxDate="@MaximumDate" />
-
-    <MudTimePicker Disabled="@Disabled"
-                   ReadOnly="@ReadOnly"
-                   Culture=@FormCulture.Instance
-                   Color=@Color                   
-                   Underline=@Underline
-                   Variant="Variant"
-                   Error="@(!string.IsNullOrWhiteSpace(ErrorHelperText))"
-                   Clearable=true
-                   Editable=@AllowManualInput
-                   MinuteSelectionStep="@(TimeStep ?? 15)" />
-</MudStack>
+<MudDateWheelPicker Value="@value"
+                    ValueChanged="@OnChanged"
+                    ShowHeader=true
+                    Culture="@Culture"
+                    DateView=DateView.Both
+                    Error="@(!string.IsNullOrWhiteSpace(ErrorHelperText))"
+                    ErrorText="@ErrorHelperText"
+                    Disabled="@Disabled"
+                    ReadOnly="@ReadOnly"
+                    HelperText="@HelperText"
+                    Label="@Label"
+                    Variant="@Variant"
+                    Clearable=true
+                    Underline=@Underline          
+                    Editable=@AllowManualInput />
 
 @code {
 
@@ -53,35 +39,14 @@
     }
 
     [Parameter]
-    public string? Format { get; set; }
-
-    [Parameter]
     public bool AllowManualInput { get; set; }
-
-    [Parameter]
-    public bool AmPm { get; set; }
-
-    [Parameter]
-    public int? TimeStep { get; set; }
-
-    [Parameter]
-    public DateTime? MinimumDate { get; set; }
-
-    [Parameter]
-    public DateTime? MaximumDate { get; set; }
-
+        
     [Parameter]
     public Func<DateTime?, TDate>? ConvertFromDateTime { get; set; }
 
     [Parameter]
     public Func<TDate, DateTime?>? ConvertToDateTime { get; set; }
-
-    [Parameter]
-    public EventCallback<TDate> OnValueChanged { get; set; }
-
-    [Parameter]
-    public TDate Value { get; set; } = default!;
-
+    
     private Task OnChanged(DateTime? value)
     {
         if (this.value.HasValue)

@@ -1,4 +1,7 @@
-﻿@using global::MudBlazor
+﻿@using System.Globalization
+@using global::MudBlazor
+
+@typeparam TValue
 
 @code {
     [Parameter]
@@ -19,9 +22,26 @@
     [Parameter]
     public string? ErrorHelperText { get; set; }
 
+    protected bool HasError => !string.IsNullOrWhiteSpace(ErrorHelperText);
+
     [Parameter]
     public string? HelperText { get; set; }
 
     [Parameter]
     public string? Label { get; set; }
+
+    [Parameter]
+    public string? Class { get; set; }
+
+    [Parameter]
+    public string? PlaceHolder { get; set; }
+
+    [Parameter]
+    public CultureInfo? Culture { get; set; }
+
+    [Parameter]
+    public TValue Value { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<TValue> OnValueChanged { get; set; }
 }

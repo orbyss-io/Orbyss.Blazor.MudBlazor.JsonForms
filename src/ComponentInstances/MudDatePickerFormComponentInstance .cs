@@ -10,15 +10,13 @@ namespace Orbyss.Blazor.MudBlazor.JsonForms.ComponentInstances
         {
         }
 
-        public Variant Variant { get; set; }
+        public Variant Variant { get; set; } = Variant.Outlined;
 
         public Color Color { get; set; }
 
         public bool Underline { get; set; }
 
         public string? Format { get; set; }
-
-        public bool AmPm { get; set; }
 
         protected override IDictionary<string, object?> GetDateInputParameter()
         {
@@ -27,8 +25,7 @@ namespace Orbyss.Blazor.MudBlazor.JsonForms.ComponentInstances
                 [nameof(Variant)] = Variant,
                 [nameof(Color)] = Color,
                 [nameof(Underline)] = Underline,
-                [nameof(Format)] = Format,
-                [nameof(AmPm)] = AmPm
+                [nameof(Format)] = Format
             };
         }
     }

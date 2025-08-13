@@ -1,0 +1,26 @@
+﻿@using Orbyss.Blazor.JsonForms.Constants
+@using global::MudBlazor
+
+@inherits MudBlazorFormComponentBase<bool?>
+
+<MudCheckBox T="bool?"
+              Disabled=@Disabled
+              Class=@Class
+              ErrorText=@ErrorHelperText
+              Error=@HasError
+              Culture=@Culture
+              Label=@Label
+              Value=@Value
+              ReadOnly="@ReadOnly"
+              Color=@Color
+              LabelPlacement=@LabelPlacement
+              Size=@Size              
+              ValueChanged="@OnValueChanged" />
+
+@code {
+    [Parameter]
+    public Placement LabelPlacement { get; set; }
+
+    [Parameter]
+    public Size Size { get; set; }
+}

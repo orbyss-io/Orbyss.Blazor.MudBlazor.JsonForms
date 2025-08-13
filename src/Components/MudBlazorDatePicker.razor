@@ -2,43 +2,35 @@
 @using global::MudBlazor;
 
 @typeparam TDate
-@inherits MudBlazorFormComponentBase
+@inherits MudBlazorFormComponentBase<TDate>
 
-<MudDatePicker Date="@value"
-               DateChanged="@OnChanged"
-               Error="@(!string.IsNullOrWhiteSpace(ErrorHelperText))"               
+<MudDatePicker @bind-Date=@InternalValue
+               Error="@(!string.IsNullOrWhiteSpace(ErrorHelperText))"
                ErrorText="@ErrorHelperText"
                Disabled="@Disabled"
                ReadOnly="@ReadOnly"
-               Culture=@FormCulture.Instance
-               Color=@Color
-               Underline=@Underline
-               HelperText="@HelperText"
-               Label="@Label"
-               Variant="Variant"
-               Clearable=true
-               Editable=@AllowManualInput
+               HelperText="@HelperText" 
+               Label="@Label" 
+               Variant="@Variant" 
+               Culture="@Culture"
+               Clearable=true 
                MinDate="@MinimumDate"
-               MaxDate="@MaximumDate" />
+               MaxDate="@MaximumDate"
+               Editable=@AllowManualInput />
 
 @code {
+    DateTime? internalValue;
 
-    private DateTime? value;
-
-    protected override void OnParametersSet()
-    {
-        if (ConvertToDateTime is null)
+    private DateTime? InternalValue 
+    { 
+        get => internalValue; 
+        set
         {
-            value = null;
+            internalValue = value;
+            InvokeAsync(() => OnChanged(internalValue));
         }
-        else
-        {
-            value = ConvertToDateTime(Value);
-        }
-
-        base.OnParametersSet();
     }
-    
+
     [Parameter]
     public bool AllowManualInput { get; set; }
 
@@ -57,19 +49,8 @@
     [Parameter]
     public Func<TDate, DateTime?>? ConvertToDateTime { get; set; }
 
-    [Parameter]
-    public EventCallback<TDate> OnValueChanged { get; set; }
-
-    [Parameter]
-    public TDate Value { get; set; } = default!;
-
     private Task OnChanged(DateTime? value)
-    {
-        if (this.value.HasValue)
-        {
-            this.value = value;
-        }
-
+    {        
         if (!value.HasValue || ConvertToDateTime is null)
         {
             return OnValueChanged.InvokeAsync(default);

@@ -1,0 +1,25 @@
+﻿@using Orbyss.Blazor.JsonForms.Constants
+@using global::MudBlazor
+
+@inherits MudBlazorFormComponentBase<int?>
+
+<MudNumericField T="int?"
+              Disabled=@Disabled
+              Class=@Class
+              ErrorText=@ErrorHelperText
+              Error=@HasError
+              Culture=@Culture
+              HelperText=@HelperText
+              Label=@Label
+              Typo=@Typo
+              Value=@Value
+              ReadOnly="@ReadOnly"
+              Underline=@Underline
+              Variant="@Variant"
+              Placeholder="@PlaceHolder"
+              ValueChanged="@OnValueChanged" />
+
+@code {
+    [Parameter]
+    public Typo Typo { get; set; }
+}

@@ -1,54 +1,68 @@
 ﻿@using global::MudBlazor
 
-<MudSelectExtended T="string"
+<MudSelectExtended T="TranslatedEnumItem"
                    ItemCollection=@items
                    SearchBox="@Searchable"
                    SearchBoxClearable=true
                    SearchFunc=SearchFunc
                    Disabled="@Disabled"
-                   Label="@Label"
-                   ValueChanged="@OnValueChanged"
+                   Label="@Label"                   
+                   @bind-SelectedValues="@InternalValues"
                    ReadOnly="@ReadOnly"
                    ErrorText="@ErrorHelperText"
+                   MultiSelection=true                   
                    HelperText=@HelperText
                    Error=@(!string.IsNullOrWhiteSpace(ErrorHelperText))
-                   Value="@Value"
                    Clearable="@Clearable"
-                   ToStringFunc="GetText"
-                   MultiSelection="@false"
+                   ToStringFunc="@(i => i.Label)"
                    Variant="@Variant" />
 
 
 @code {
-    ICollection<string> items = [];
+    ICollection<TranslatedEnumItem> items = [];
 
     protected override void OnInitialized()
     {
-        items = Items?
-            .Select(x => x.Value)?
-            .ToList() ?? [];
-
         if (Items?.All(x => string.IsNullOrWhiteSpace(x.Value) && string.IsNullOrWhiteSpace(x.Label)) == true)
         {
             HelperText = "There are no items to select for this dropdown";
             Disabled = true;
         }
+
+        if (Value?.Any() == true && Items?.Any() == true)
+        {
+            internalValues = Items.Where(x => Value?.Contains(x.Value) == true);
+        }
+
+        items = Items?.ToList() ?? [];
     }
 
-    string GetText(string value)
+    protected override void OnParametersSet()
     {
-        var item = Items.FirstOrDefault(x => x.Value == value);
-        return item.Label ?? item.Value;
+        items = Items?.ToList() ?? [];
+        internalValues = items.Where(x => Value?.Contains(x.Value) == true);
+        StateHasChanged();
     }
 
-    bool SearchFunc(string value, string searchValue)
+    IEnumerable<TranslatedEnumItem> internalValues = [];
+
+    private IEnumerable<TranslatedEnumItem> InternalValues
+    {
+        get => internalValues;
+        set
+        {
+            internalValues = value;
+            InvokeAsync(() => OnValueChanged.InvokeAsync(internalValues.Select(x => x.Value)));
+        }
+    }
+
+
+    bool SearchFunc(TranslatedEnumItem item, string searchValue)
     {
         if (string.IsNullOrWhiteSpace(searchValue))
         {
             return true;
         }
-
-        var item = Items.FirstOrDefault(x => x.Value == value);
 
         var valueToSearchOn = !string.IsNullOrWhiteSpace(item.Label)
                ? item.Label
@@ -103,7 +117,7 @@
     public bool SearchCaseSensitive { get; set; }
 
     [Parameter]
-    public EventCallback<string> OnValueChanged { get; set; }
+    public EventCallback<IEnumerable<string>> OnValueChanged { get; set; }
 
     [Parameter]
     public bool ReadOnly { get; set; }
@@ -115,7 +129,7 @@
     public string? HelperText { get; set; }
 
     [Parameter]
-    public string? Value { get; set; }
+    public IEnumerable<string>? Value { get; set; }
 
     [Parameter]
     public bool Disabled { get; set; }

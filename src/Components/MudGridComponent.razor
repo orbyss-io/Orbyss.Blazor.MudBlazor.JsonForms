@@ -1,13 +1,16 @@
 ﻿@using global::MudBlazor;
 
 
-    <MudGrid Spacing="@(Spacing ?? 0)" Justify="@Justify">
+    <MudGrid Spacing="@(Spacing ?? 0)" Justify="@Justify" Class="@Class">
         @ChildContent
     </MudGrid>
 
 @code {
     [Parameter]
     public int? Spacing { get; set; }
+
+    [Parameter]
+    public string? Class { get; set; }
 
     [Parameter]
     public Justify Justify { get; set; }

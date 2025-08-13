@@ -1,6 +1,6 @@
 ﻿@using global::MudBlazor;
 
-<MudButton Color="@Color" Variant="@Variant" StartIcon="@StartIcon" EndIcon="@EndIcon" OnClick="OnClick" Size="@Size">
+<MudButton Color="@Color" Variant="@Variant" StartIcon="@StartIcon" EndIcon="@EndIcon" OnClick="OnClicked" Size="@Size" Class="@Class">
     @Text
 </MudButton>
 
@@ -9,13 +9,16 @@
     public string? Text { get; set; }
 
     [Parameter]
-    public EventCallback OnClick { get; set; }
+    public EventCallback OnClicked { get; set; }
 
     [Parameter]
     public string? StartIcon { get; set; }
 
     [Parameter]
     public string? EndIcon { get; set; }
+
+    [Parameter]
+    public string? Class { get; set; }
 
     [Parameter]
     public Color Color { get; set; }

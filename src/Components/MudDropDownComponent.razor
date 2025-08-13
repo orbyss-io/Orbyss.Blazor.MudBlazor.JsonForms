@@ -1,54 +1,69 @@
 ﻿@using global::MudBlazor
 
-<MudSelectExtended T="string"
-                   ItemCollection=@items
+<MudSelectExtended T="TranslatedEnumItem"
+                   ItemCollection="@items"
                    SearchBox="@Searchable"
                    SearchBoxClearable=true
                    SearchFunc=SearchFunc
                    Disabled="@Disabled"
                    Label="@Label"
-                   ValueChanged="@OnValueChanged"
+                   @bind-Value=@InternalValue
                    ReadOnly="@ReadOnly"
                    ErrorText="@ErrorHelperText"
                    HelperText=@HelperText
                    Error=@(!string.IsNullOrWhiteSpace(ErrorHelperText))
-                   Value="@Value"
                    Clearable="@Clearable"
-                   ToStringFunc="GetText"
                    MultiSelection="@false"
-                   Variant="@Variant" />
+                   ToStringFunc="@(i => i.Label)"
+                   Variant="@Variant">
+</MudSelectExtended>
 
 
 @code {
-    ICollection<string> items = [];
+    ICollection<TranslatedEnumItem> items = [];
 
     protected override void OnInitialized()
     {
-        items = Items?
-            .Select(x => x.Value)?
-            .ToList() ?? [];
-
         if (Items?.All(x => string.IsNullOrWhiteSpace(x.Value) && string.IsNullOrWhiteSpace(x.Label)) == true)
         {
             HelperText = "There are no items to select for this dropdown";
             Disabled = true;
         }
+
+        if (!string.IsNullOrWhiteSpace(Value) && Items?.Any() == true)
+        {
+            internalValue = Items.FirstOrDefault(x => x.Value == Value);
+        }
+
+        items = Items?.ToList() ?? [];
     }
 
-    string GetText(string value)
+    protected override void OnParametersSet()
     {
-        var item = Items.FirstOrDefault(x => x.Value == value);
-        return item.Label ?? item.Value;
+        items = Items?.ToList() ?? [];
+        internalValue = items.FirstOrDefault(x => x.Value == Value);
+        StateHasChanged();
     }
 
-    bool SearchFunc(string value, string searchValue)
+    TranslatedEnumItem internalValue;
+
+    private TranslatedEnumItem InternalValue
+    {
+        get => internalValue;
+        set
+        {
+            internalValue = value;
+            InvokeAsync(() => OnValueChanged.InvokeAsync(internalValue.Value));
+        }
+    }
+
+
+    bool SearchFunc(TranslatedEnumItem item, string searchValue)
     {
         if (string.IsNullOrWhiteSpace(searchValue))
         {
             return true;
         }
-
-        var item = Items.FirstOrDefault(x => x.Value == value);
 
         var valueToSearchOn = !string.IsNullOrWhiteSpace(item.Label)
                ? item.Label
