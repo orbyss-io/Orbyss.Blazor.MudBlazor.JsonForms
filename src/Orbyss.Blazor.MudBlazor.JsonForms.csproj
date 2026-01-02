@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
@@ -20,9 +20,10 @@
 	</ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CodeBeam.MudBlazor.Extensions" Version="8.2.4" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.18" />
+    <PackageReference Include="CodeBeam.MudBlazor.Extensions" Version="8.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.11" />
     <PackageReference Include="Orbyss.Blazor.JsonForms" Version="1.0.3" />
+    <!--<PackageReference Include="ZXing.Net" Version="0.16.11" />-->
   </ItemGroup>
 
 </Project>

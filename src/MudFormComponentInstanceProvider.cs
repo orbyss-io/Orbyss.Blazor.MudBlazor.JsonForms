@@ -8,7 +8,6 @@ using Orbyss.Blazor.JsonForms.Context.Models;
 using Orbyss.Blazor.JsonForms.Interpretation;
 using Orbyss.Blazor.MudBlazor.JsonForms.ComponentInstances;
 using Orbyss.Blazor.MudBlazor.JsonForms.Components;
-using ZXing.Common.ReedSolomon;
 
 namespace Orbyss.Blazor.MudBlazor.JsonForms
 {
