@@ -1,7 +1,7 @@
 # 📦 Orbyss.Blazor.MudBlazor.JsonForms
 
-![NuGet](https://img.shields.io/nuget/v/Orbyss.Blazor.Syncfusion.JsonForms)
-![NuGet Downloads](https://img.shields.io/nuget/dt/Orbyss.Blazor.Syncfusion.JsonForms)
+![NuGet](https://img.shields.io/nuget/v/Orbyss.Blazor.MudBlazor.JsonForms)
+![NuGet Downloads](https://img.shields.io/nuget/dt/Orbyss.Blazor.MudBlazor.JsonForms)
 
 **A full-featured MudBlazor-based UI renderer for [Orbyss.Blazor.JsonForms](https://github.com/orbyss-io/Orbyss.Blazor.JsonForms).**  
 This package brings the power of [MudBlazor](https://mudblazor.com/) components to schema-driven forms using the [jsonforms.io](https://jsonforms.io/) standard.  
